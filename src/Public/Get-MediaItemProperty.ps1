@@ -56,10 +56,24 @@ function Get-MediaItemProperty {
 
         [TagLib.File[]]$tagFiles = Get-MediaItem @gmiParams
 
-        if ($Name) {
-            return ($tagFiles | Select-Object -Property $Name)
+        if (-not $PSBoundParameters.ContainsKey('Name')) {
+            return $tagFiles
         }
 
-        return $tagFiles
+        foreach ($tagFile in $tagFiles) {
+            [Hashtable]$retObj = @{
+                PSPath = "Microsoft.PowerShell.Core\FileSystem::$($tagFile.Name)"
+            }
+
+            foreach ($property in $tagFile.Tag.PSObject.Properties.Name) {
+                foreach ($nameProperty in $Name) {
+                    if ($property -like $nameProperty) {
+                        $retObj[$property] = $tagFile.Tag.$property
+                    }
+                }
+            }
+
+            $PSCmdlet.WriteObject(([PSCustomObject]$retObj))
+        }
     }
 }
