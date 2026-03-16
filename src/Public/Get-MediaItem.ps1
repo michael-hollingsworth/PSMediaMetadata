@@ -19,7 +19,6 @@ function Get-MediaItem {
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'LiteralPath')]
         [ValidateNotNullOrEmpty()]
-        [Validate]
         [Alias('PSPath', 'LP')]
         [String]$LiteralPath,
 
